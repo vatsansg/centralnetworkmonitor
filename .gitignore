@@ -1,0 +1,10 @@
+node_modules/
+.env
+*.db
+dist/
+logs/
+*.log
+.DS_Store
+deploy.zip
+cleanup-webjob.zip
+backend/data/*.db
