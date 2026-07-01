@@ -5,13 +5,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        // These reference CSS variables so all components theme-switch automatically.
+        // Dark values are defined in :root; light values override via html:not(.dark).
         dark: {
-          900: '#0a0e1a',
-          800: '#0f1629',
-          700: '#151e35',
-          600: '#1c2844',
-          500: '#243058',
-          400: '#2d3d6e',
+          900: 'rgb(var(--c900) / <alpha-value>)',
+          800: 'rgb(var(--c800) / <alpha-value>)',
+          700: 'rgb(var(--c700) / <alpha-value>)',
+          600: 'rgb(var(--c600) / <alpha-value>)',
+          500: 'rgb(var(--c500) / <alpha-value>)',
+          400: 'rgb(var(--c400) / <alpha-value>)',
         },
         accent: {
           blue:   '#3b82f6',

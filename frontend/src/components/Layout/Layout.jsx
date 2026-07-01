@@ -8,7 +8,7 @@ export default function Layout({ children }) {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6 scrollbar-thin">
+        <main className="flex-1 overflow-y-auto px-8 pt-5 pb-6 scrollbar-thin">
           {children}
         </main>
       </div>

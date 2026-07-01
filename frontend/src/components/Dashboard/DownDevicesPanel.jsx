@@ -15,7 +15,6 @@ export default function DownDevicesPanel({ devices }) {
               <th className="text-left pb-2 pr-4">Name</th>
               <th className="text-left pb-2 pr-4">IP</th>
               <th className="text-left pb-2 pr-4">Type</th>
-              <th className="text-left pb-2 pr-4">VLAN</th>
               <th className="text-left pb-2 pr-4">Location</th>
               <th className="text-left pb-2">Last Seen</th>
             </tr>
@@ -26,7 +25,6 @@ export default function DownDevicesPanel({ devices }) {
                 <td className="py-2 pr-4 font-medium text-accent-red">{d.name}</td>
                 <td className="py-2 pr-4 font-mono text-xs">{d.ip_address}</td>
                 <td className="py-2 pr-4 text-xs">{d.device_type_name}</td>
-                <td className="py-2 pr-4 text-xs">{d.vlan_name}</td>
                 <td className="py-2 pr-4 text-xs">{d.location_name}</td>
                 <td className="py-2 text-xs text-gray-500">
                   {d.last_seen ? new Date(d.last_seen).toLocaleTimeString() : '—'}

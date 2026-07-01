@@ -39,9 +39,9 @@ export default function Dashboard() {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Tab bar */}
+      {/* Tab bar — sticky, offset to cancel parent padding so background covers full width */}
       {venues.length > 0 && (
-        <div className="flex items-center gap-1 overflow-x-auto pb-3 mb-4 scrollbar-thin border-b border-dark-600">
+        <div className="sticky top-0 z-10 bg-dark-900 -mx-8 px-8 pt-2 pb-3 mb-5 border-b border-dark-600 flex items-center gap-2 overflow-x-auto scrollbar-thin">
           {sorted.map(v => (
             <button
               key={v.venue_id}

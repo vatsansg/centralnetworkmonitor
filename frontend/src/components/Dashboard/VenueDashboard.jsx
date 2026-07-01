@@ -16,12 +16,28 @@ function formatGeneratedAt(ts) {
   const d = new Date(ts);
   const tzAbbr = new Intl.DateTimeFormat('en', { timeZoneName: 'short' })
     .formatToParts(d).find(p => p.type === 'timeZoneName')?.value || '';
-  return `${d.toLocaleTimeString()} ${tzAbbr} (UTC ${d.toISOString().slice(11,19)})`;
+  return `${d.toLocaleTimeString()} ${tzAbbr} (UTC ${d.toISOString().slice(11, 19)})`;
+}
+
+function useElapsed(ts) {
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick(n => n + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
+  if (!ts) return null;
+  const mins = Math.floor((Date.now() - new Date(ts).getTime()) / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m > 0 ? `${h}h ${m}m ago` : `${h}h ago`;
 }
 
 export default function VenueDashboard({ venueId }) {
   const { venueData, refreshActiveVenue } = useApp();
   const data = venueData[venueId];
+  const elapsed = useElapsed(data?.generated_at);
 
   usePolling(() => refreshActiveVenue(venueId), 60000, !!venueId);
 
@@ -54,9 +70,14 @@ export default function VenueDashboard({ venueId }) {
             <span className="text-gray-400">Version: </span>
             <span className="text-gray-300">{data.app_version}</span>
           </div>
-          <div>
+          <div className="flex items-center gap-1.5">
             <span className="text-gray-400">Generated: </span>
-            <span className="text-gray-300">{formatGeneratedAt(data.generated_at)}</span>
+            <span className="text-gray-300 animate-pulse">{formatGeneratedAt(data.generated_at)}</span>
+            {elapsed && (
+              <span className="text-accent-yellow font-mono text-xs px-1.5 py-0.5 rounded bg-accent-yellow/10 border border-accent-yellow/30">
+                {elapsed}
+              </span>
+            )}
           </div>
           <div className={`px-2 py-0.5 rounded text-xs font-bold border ${
             data.internet?.status === 'up'

@@ -2,12 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html { font-family: 'Inter', system-ui, sans-serif; }
-  body { @apply bg-dark-900 text-white; }
-  .light body { @apply bg-gray-50 text-gray-900; }
+/* ─── Dark theme (default) — RGB channels for each dark-* shade ─── */
+:root {
+  --c900: 10 14 26;     /* #0a0e1a */
+  --c800: 15 22 41;     /* #0f1629 */
+  --c700: 21 30 53;     /* #151e35 */
+  --c600: 28 40 68;     /* #1c2844 */
+  --c500: 36 48 88;     /* #243058 */
+  --c400: 45 61 110;    /* #2d3d6e */
 }
 
+/* ─── Light theme overrides ─── */
+html:not(.dark) {
+  --c900: 241 245 249;  /* slate-100 — page background  */
+  --c800: 226 232 240;  /* slate-200 — header / sidebar */
+  --c700: 255 255 255;  /* white     — cards / panels   */
+  --c600: 248 250 252;  /* slate-50  — inputs / nested  */
+  --c500: 226 232 240;  /* slate-200 — dividers         */
+  --c400: 203 213 225;  /* slate-300 — borders / hover  */
+}
+
+@layer base {
+  html { font-family: 'Inter', system-ui, sans-serif; }
+  body { @apply bg-dark-900; }
+}
+
+/* ─── Light mode text overrides ─────────────────────────────────── */
+/* All dark-* backgrounds become light, so text needs to flip too.  */
+
+html:not(.dark),
+html:not(.dark) body            { color: #1e293b; }
+
+html:not(.dark) .text-white     { color: #1e293b; }
+html:not(.dark) .text-gray-300  { color: #475569; }
+html:not(.dark) .text-gray-400  { color: #64748b; }
+html:not(.dark) .text-gray-500  { color: #94a3b8; }
+html:not(.dark) .text-gray-600  { color: #64748b; }
+
+/* Keep white text on solid accent-colour buttons (higher specificity wins) */
+html:not(.dark) .bg-accent-blue.text-white  { color: #ffffff; }
+html:not(.dark) .bg-accent-red.text-white   { color: #ffffff; }
+html:not(.dark) .bg-accent-green.text-white { color: #ffffff; }
+html:not(.dark) .bg-blue-600.text-white     { color: #ffffff; }
+
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
 @layer utilities {
   .scrollbar-thin { scrollbar-width: thin; }
   .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }

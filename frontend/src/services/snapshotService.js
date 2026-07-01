@@ -69,7 +69,7 @@ export function openSnapshot(venueData) {
 
 ${d.vlans?.length ? `<h2>VLANs</h2><table><tr><th>Name</th><th>Subnet</th><th>Gateway</th></tr>${d.vlans.map(v=>`<tr><td>${v.name}</td><td>${v.subnet}</td><td>${v.gateway}</td></tr>`).join('')}</table>` : ''}
 
-${d.down_devices?.length ? `<h2>Down Devices (${d.down_devices.length})</h2><table><tr><th>Name</th><th>IP</th><th>Type</th><th>VLAN</th><th>Location</th><th>Last Seen</th></tr>${d.down_devices.map(x=>`<tr><td>${x.name}</td><td>${x.ip_address}</td><td>${x.device_type_name||'—'}</td><td>${x.vlan_name||'—'}</td><td>${x.location_name||'—'}</td><td>${x.last_seen?new Date(x.last_seen).toLocaleTimeString():'—'}</td></tr>`).join('')}</table>` : ''}
+${d.down_devices?.length ? `<h2>Down Devices (${d.down_devices.length})</h2><table><tr><th>Name</th><th>IP</th><th>Type</th><th>Location</th><th>Last Seen</th></tr>${d.down_devices.map(x=>`<tr><td>${x.name}</td><td>${x.ip_address}</td><td>${x.device_type_name||'—'}</td><td>${x.location_name||'—'}</td><td>${x.last_seen?new Date(x.last_seen).toLocaleTimeString():'—'}</td></tr>`).join('')}</table>` : ''}
 
 ${d.top_latency?.length ? `<h2>Top Latency</h2><table><tr><th>Name</th><th>IP</th><th>Latency</th><th>Status</th></tr>${d.top_latency.slice(0,8).map(x=>`<tr><td>${x.name}</td><td>${x.ip_address}</td><td>${x.last_ping_latency}ms</td><td><span class="badge ${x.status}">${x.status.toUpperCase()}</span></td></tr>`).join('')}</table>` : ''}
 

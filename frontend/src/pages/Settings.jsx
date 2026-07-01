@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { authApi, usersApi } from '../api/client';
 import Modal from '../components/common/Modal';
-import { Shield, UserPlus, RefreshCw, Trash2, KeyRound } from 'lucide-react';
+import { Shield, UserPlus, RefreshCw, Trash2, KeyRound, Copy, Check } from 'lucide-react';
 
 const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
 
@@ -75,12 +75,27 @@ function ChangePasswordSection({ user, onPasswordChanged }) {
   );
 }
 
+function CopyButton({ text }) {
+  const [copied, setCopied] = useState(false);
+  function copy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+  return (
+    <button onClick={copy} className="p-1.5 rounded bg-dark-500 hover:bg-dark-400 text-gray-400 hover:text-white transition-colors" title="Copy">
+      {copied ? <Check className="w-3.5 h-3.5 text-accent-green" /> : <Copy className="w-3.5 h-3.5" />}
+    </button>
+  );
+}
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ username: '', email: '', role: 'viewer' });
   const [error, setError] = useState('');
-  const [toast, setToast] = useState('');
+  const [newCreds, setNewCreds] = useState(null);
   const { user: me } = useApp();
 
   useEffect(() => { loadUsers(); }, []);
@@ -92,11 +107,10 @@ function UserManagement() {
   async function createUser(e) {
     e.preventDefault(); setError('');
     try {
-      await usersApi.create(form);
+      const res = await usersApi.create(form);
       setShowModal(false);
       setForm({ username: '', email: '', role: 'viewer' });
-      setToast(`User ${form.username} created. Credentials sent to ${form.email}`);
-      setTimeout(() => setToast(''), 4000);
+      setNewCreds({ username: res.data.username, password: res.data.temp_password, email: res.data.email });
       loadUsers();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create user');
@@ -110,8 +124,6 @@ function UserManagement() {
 
   async function resetPassword(u) {
     await usersApi.resetPassword(u.id);
-    setToast(`Password reset email sent to ${u.email}`);
-    setTimeout(() => setToast(''), 3000);
   }
 
   async function deleteUser(u) {
@@ -137,8 +149,33 @@ function UserManagement() {
         </button>
       </div>
 
-      {toast && (
-        <div className="mb-3 p-3 rounded-lg bg-accent-green/10 border border-accent-green/30 text-accent-green text-sm">{toast}</div>
+      {newCreds && (
+        <Modal title="User Created — Save These Credentials" onClose={() => setNewCreds(null)}>
+          <p className="text-sm text-gray-400 mb-4">
+            Copy these credentials and share them with the user. The password cannot be retrieved again after closing this dialog.
+          </p>
+          <div className="space-y-3">
+            {[['Username', newCreds.username], ['Temporary Password', newCreds.password]].map(([label, val]) => (
+              <div key={label}>
+                <p className="text-xs text-gray-500 mb-1">{label}</p>
+                <div className="flex items-center gap-2 bg-dark-600 border border-dark-400 rounded-lg px-3 py-2">
+                  <span className="flex-1 font-mono text-sm text-white select-all">{val}</span>
+                  <CopyButton text={val} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-4">
+            The user will be required to change their password on first login.
+            {newCreds.email && <> Credentials {process.env.NODE_ENV !== 'production' ? 'were also logged' : 'were emailed'} to <span className="text-gray-300">{newCreds.email}</span>.</>}
+          </p>
+          <button
+            onClick={() => setNewCreds(null)}
+            className="mt-4 w-full bg-accent-blue hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition-colors text-sm"
+          >
+            Done
+          </button>
+        </Modal>
       )}
 
       <div className="overflow-x-auto">

@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
     const id = db.createUser({ username, email, password_hash: hash, role, must_change_password: 1 });
     await sendCredentials({ to: email, username, password });
     logger.info({ msg: 'User created', id, username, role });
-    res.status(201).json({ id, username, email, role });
+    res.status(201).json({ id, username, email, role, temp_password: password });
   } catch (err) {
     if (err.message && err.message.includes('UNIQUE')) {
       return res.status(409).json({ error: 'Username or email already exists' });
