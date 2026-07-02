@@ -66,6 +66,22 @@ export function openSnapshot(venueData) {
 
 <h2>Internet Status</h2>
 <p><span class="badge ${d.internet?.status === 'up' ? 'up' : 'down'}">${d.internet?.status === 'up' ? 'ONLINE' : 'OFFLINE'}</span>${d.internet?.down_since ? ` — Down since ${new Date(d.internet.down_since).toLocaleString()}` : ''}</p>
+${(() => {
+  const st = d.internet?.speed_test;
+  if (!st) return '';
+  const testedAt = st.tested_at ? new Date(st.tested_at) : null;
+  const offset = testedAt ? -testedAt.getTimezoneOffset() : 0;
+  const sign = offset >= 0 ? '+' : '-';
+  const hh = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
+  const mm = String(Math.abs(offset) % 60).padStart(2, '0');
+  const absTime = testedAt ? `${testedAt.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false })} GMT${sign}${hh}:${mm}` : '';
+  if (st.status === 'failed') {
+    return `<p style="color:#92400e;font-size:12px;">⚠ Connectivity test failed${absTime ? ` (tested ${absTime})` : ''}</p>`;
+  }
+  const dl = st.download_mbps != null ? `${st.download_mbps.toFixed(1)} Mbps` : '—';
+  const ul = st.upload_mbps != null ? `${st.upload_mbps.toFixed(1)} Mbps` : '—';
+  return `<p style="font-size:12px;margin-top:4px;">↓ Download: <strong>${dl}</strong> &nbsp; ↑ Upload: <strong>${ul}</strong>${absTime ? ` <span style="color:#6b7280">(tested ${absTime})</span>` : ''}</p>`;
+})()}
 
 ${d.vlans?.length ? `<h2>VLANs</h2><table><tr><th>Name</th><th>Subnet</th><th>Gateway</th></tr>${d.vlans.map(v=>`<tr><td>${v.name}</td><td>${v.subnet}</td><td>${v.gateway}</td></tr>`).join('')}</table>` : ''}
 
