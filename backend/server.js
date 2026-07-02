@@ -12,6 +12,7 @@ const db = require('./src/database/database');
 const { seed } = require('./src/database/seed');
 const { registerRoutes } = require('./src/routes/index');
 const logger = require('./src/utils/logger');
+const { startCleanupScheduler } = require('./src/services/blobCleanup');
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -47,6 +48,7 @@ app.use((err, req, res, _next) => {
 
 const rawDb = db.initialize();
 seed(rawDb);
+startCleanupScheduler();
 
 const server = app.listen(PORT, () => {
   logger.info(`Central Network Monitor running on port ${PORT}`);
