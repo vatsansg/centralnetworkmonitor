@@ -21,7 +21,10 @@ export default function TopCPUPanel({ devices }) {
         {filtered.map(d => (
           <div key={d.id}>
             <div className="flex justify-between text-xs mb-1">
-              <span className="text-white truncate">{d.name}</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-white truncate">{d.name || d.ip_address}</span>
+                {d.location_name && <span className="text-gray-500 truncate">{d.location_name}</span>}
+              </div>
               <span className={`font-bold font-mono ${d.cpu_usage >= 90 ? 'text-accent-red' : d.cpu_usage >= 70 ? 'text-accent-orange' : 'text-accent-yellow'}`}>
                 {d.cpu_usage.toFixed(1)}%
               </span>

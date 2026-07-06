@@ -22,7 +22,7 @@ export default function DownDevicesPanel({ devices }) {
           <tbody className="divide-y divide-dark-500">
             {devices.map(d => (
               <tr key={d.id} className="text-gray-300">
-                <td className="py-2 pr-4 font-medium text-accent-red">{d.name}</td>
+                <td className="py-2 pr-4 font-medium text-accent-red">{d.name || d.ip_address}</td>
                 <td className="py-2 pr-4 font-mono text-xs">{d.ip_address}</td>
                 <td className="py-2 pr-4 text-xs">{d.device_type_name}</td>
                 <td className="py-2 pr-4 text-xs">{d.location_name}</td>

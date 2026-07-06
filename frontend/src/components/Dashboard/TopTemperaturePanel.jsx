@@ -30,7 +30,10 @@ export default function TopTemperaturePanel({ devices }) {
           <tbody className="divide-y divide-dark-600">
             {filtered.map(d => (
               <tr key={d.id}>
-                <td className="py-1.5 pr-3 text-white">{d.name}</td>
+                <td className="py-1.5 pr-3">
+                  <span className="text-white">{d.name || d.ip_address}</span>
+                  {d.location_name && <span className="block text-gray-500">{d.location_name}</span>}
+                </td>
                 <td className={`py-1.5 pr-3 text-right font-bold font-mono ${tempColour(d.last_temperature)}`}>
                   {d.last_temperature?.toFixed(1)}°C
                 </td>
