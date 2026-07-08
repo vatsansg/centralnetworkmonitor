@@ -4,6 +4,7 @@ const { BlobServiceClient } = require('@azure/storage-blob');
 const logger = require('../utils/logger');
 
 const CONTAINER = () => process.env.AZURE_STORAGE_CONTAINER || 'allvenuesource';
+const STALE_HOURS = parseInt(process.env.BLOB_STALE_HOURS || '48', 10);
 
 function getContainerClient() {
   const connStr = process.env.AZURE_STORAGE_CONNECTION_STRING;
@@ -32,6 +33,10 @@ async function listVenueBlobs({ bust = false } = {}) {
       const data = JSON.parse(buffer.toString());
       const generatedAt = new Date(data.generated_at);
       const ageMinutes = Math.round((now - generatedAt.getTime()) / 60000);
+      if (ageMinutes > STALE_HOURS * 60) {
+        logger.info({ msg: 'Skipping stale blob from listing', blob: blob.name, ageMinutes });
+        continue;
+      }
       results.push({
         blob_name: blob.name,
         venue_id: data.venue_id,

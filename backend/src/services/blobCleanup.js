@@ -4,7 +4,7 @@ const { BlobServiceClient } = require('@azure/storage-blob');
 const logger = require('../utils/logger');
 
 const STALE_HOURS = parseInt(process.env.BLOB_STALE_HOURS || '48', 10);
-const INTERVAL_MS = 6 * 60 * 60 * 1000; // every 6 hours
+const INTERVAL_MS = 60 * 60 * 1000; // every 1 hour
 
 async function runCleanup() {
   const connStr = process.env.AZURE_STORAGE_CONNECTION_STRING;
@@ -50,7 +50,7 @@ function startCleanupScheduler() {
     runCleanup().catch(err => logger.error(`blobCleanup scheduled run failed: ${err.message}`));
   }, INTERVAL_MS);
 
-  logger.info(`blobCleanup: scheduler started (every ${INTERVAL_MS / 3600000}h, stale after ${STALE_HOURS}h)`);
+  logger.info(`blobCleanup: scheduler started (every ${INTERVAL_MS / 60000}min, stale after ${STALE_HOURS}h)`);
 }
 
 module.exports = { startCleanupScheduler, runCleanup };
